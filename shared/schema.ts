@@ -22,6 +22,34 @@ export const insertStockSchema = createInsertSchema(stocks).omit({
 export type InsertStock = z.infer<typeof insertStockSchema>;
 export type Stock = typeof stocks.$inferSelect;
 
+// TradingView API response structure
+export const tradingViewStockSchema = z.object({
+  s: z.string(), // symbol like "NSE:SOLARINDS"
+  d: z.array(z.union([z.string(), z.number()])), // data array with mixed types
+});
+
+export const tradingViewResponseSchema = z.object({
+  totalCount: z.number(),
+  data: z.array(tradingViewStockSchema),
+});
+
+export type TradingViewResponse = z.infer<typeof tradingViewResponseSchema>;
+
+// Processed stock data from TradingView
+export const processedStockSchema = z.object({
+  symbol: z.string(),
+  name: z.string(),
+  description: z.string(),
+  close: z.number(),
+  change: z.number(),
+  volume: z.number(),
+  relativeVolume: z.number(),
+  marketCap: z.number(),
+  sector: z.string(),
+});
+
+export type ProcessedStock = z.infer<typeof processedStockSchema>;
+
 export const screenerTypes = z.enum([
   "52-week-high",
   "volume-buzzers", 
@@ -32,17 +60,7 @@ export const screenerTypes = z.enum([
 export type ScreenerType = z.infer<typeof screenerTypes>;
 
 export const stockResponseSchema = z.object({
-  stocks: z.array(z.object({
-    id: z.number(),
-    symbol: z.string(),
-    name: z.string(),
-    price: z.string(),
-    change: z.string(),
-    changePercent: z.string(),
-    volume: z.number(),
-    marketCap: z.number(),
-    lastUpdated: z.string(),
-  })),
+  stocks: z.array(processedStockSchema),
   count: z.number(),
   screenerType: screenerTypes,
 });

@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { formatPrice, formatVolume, formatMarketCap, formatChange } from "@/lib/utils";
+import { formatPrice, formatVolume, formatMarketCap } from "@/lib/utils";
 import type { StockResponse } from "@shared/schema";
 
-type SortColumn = "symbol" | "name" | "price" | "change" | "volume" | "marketCap";
+type SortColumn = "symbol" | "name" | "close" | "change" | "volume" | "marketCap" | "sector";
 type SortDirection = "asc" | "desc";
 
 interface StockTableProps {
@@ -32,10 +32,7 @@ export function StockTable({ data }: StockTableProps) {
     let bVal: any = b[sortColumn];
 
     // Handle numeric sorting
-    if (sortColumn === "price" || sortColumn === "change") {
-      aVal = parseFloat(aVal);
-      bVal = parseFloat(bVal);
-    } else if (sortColumn === "volume" || sortColumn === "marketCap") {
+    if (sortColumn === "close" || sortColumn === "change" || sortColumn === "volume" || sortColumn === "marketCap") {
       aVal = Number(aVal);
       bVal = Number(bVal);
     }
@@ -85,10 +82,10 @@ export function StockTable({ data }: StockTableProps) {
               <Button
                 variant="ghost"
                 className="h-auto p-0 font-medium text-xs text-gray-500 uppercase tracking-wider hover:bg-gray-100"
-                onClick={() => handleSort("price")}
+                onClick={() => handleSort("close")}
               >
                 Price
-                {getSortIcon("price")}
+                {getSortIcon("close")}
               </Button>
             </TableHead>
             <TableHead className="px-6 py-3">
@@ -121,29 +118,40 @@ export function StockTable({ data }: StockTableProps) {
                 {getSortIcon("marketCap")}
               </Button>
             </TableHead>
+            <TableHead className="px-6 py-3 hidden xl:table-cell">
+              <Button
+                variant="ghost"
+                className="h-auto p-0 font-medium text-xs text-gray-500 uppercase tracking-wider hover:bg-gray-100"
+                onClick={() => handleSort("sector")}
+              >
+                Sector
+                {getSortIcon("sector")}
+              </Button>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedData.map((stock) => {
-            const changeNum = parseFloat(stock.change);
+          {sortedData.map((stock, index) => {
+            const changeNum = Number(stock.change);
             const changeClass = changeNum >= 0 ? "text-green-600" : "text-red-600";
+            const changeSign = changeNum >= 0 ? "+" : "";
             
             return (
-              <TableRow key={stock.id} className="hover:bg-gray-50 transition-colors duration-150">
+              <TableRow key={`${stock.symbol}-${index}`} className="hover:bg-gray-50 transition-colors duration-150">
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">{stock.symbol}</div>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                  <div className="text-sm text-gray-900">{stock.name}</div>
+                  <div className="text-sm text-gray-900" title={stock.description}>{stock.name}</div>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {formatPrice(stock.price)}
+                    {formatPrice(stock.close)}
                   </div>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <div className={`text-sm font-medium ${changeClass}`}>
-                    {formatChange(stock.change, stock.changePercent)}
+                    {changeSign}{stock.change.toFixed(2)}
                   </div>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
@@ -151,6 +159,9 @@ export function StockTable({ data }: StockTableProps) {
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                   <div className="text-sm text-gray-900">{formatMarketCap(stock.marketCap)}</div>
+                </TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+                  <div className="text-sm text-gray-600">{stock.sector}</div>
                 </TableCell>
               </TableRow>
             );
