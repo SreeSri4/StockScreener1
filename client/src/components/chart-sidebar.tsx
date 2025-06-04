@@ -1,37 +1,97 @@
 import { useState, useEffect, useRef, memo } from "react";
-import { X, ExternalLink } from "lucide-react";
+import { X, ExternalLink, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
   const container = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     if (container.current) {
-      container.current.innerHTML = '';
-      const script = document.createElement("script");
-      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-      script.type = "text/javascript";
-      script.async = true;
-      script.innerHTML = JSON.stringify({
-        autosize: true,
-        symbol: `NSE:${symbol}`,
-        interval: "D",
-        timezone: "Asia/Kolkata",
-        theme: "light",
-        style: "1",
-        locale: "en",
-        enable_publishing: false,
-        allow_symbol_change: true,
-        support_host: "https://www.tradingview.com"
-      });
-      container.current.appendChild(script);
+      try {
+        // Clear previous content
+        container.current.innerHTML = '';
+        
+        // Create widget container
+        const widgetContainer = document.createElement("div");
+        widgetContainer.className = "tradingview-widget-container__widget";
+        container.current.appendChild(widgetContainer);
+
+        // Create script element
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/tv.js";
+        script.type = "text/javascript";
+        script.onload = () => {
+          try {
+            new (window as any).TradingView.widget({
+              container_id: widgetContainer.id,
+              autosize: true,
+              symbol: `NSE:${symbol}`,
+              interval: "D",
+              timezone: "Asia/Kolkata",
+              theme: "light",
+              style: "1",
+              locale: "en",
+              enable_publishing: false,
+              allow_symbol_change: true,
+              hide_top_toolbar: false,
+              hide_legend: false,
+              save_image: false,
+              height: "100%",
+              width: "100%",
+            });
+          } catch (err) {
+            console.error("Error initializing TradingView widget:", err);
+            setError(true);
+          }
+        };
+        script.onerror = () => {
+          console.error("Failed to load TradingView script");
+          setError(true);
+        };
+        
+        // Add unique ID to widget container
+        widgetContainer.id = `tradingview_${Math.random().toString(36).substring(7)}`;
+        
+        // Append script
+        document.head.appendChild(script);
+        
+        return () => {
+          // Cleanup
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        };
+      } catch (err) {
+        console.error("Error setting up TradingView widget:", err);
+        setError(true);
+      }
     }
   }, [symbol]);
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gray-50">
+        <TrendingUp className="h-12 w-12 text-gray-400 mb-4" />
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          Unable to Load Chart
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          There was an error loading the TradingView chart. You can view it directly on TradingView.
+        </p>
+        <Button
+          onClick={() => window.open(`https://in.tradingview.com/chart/?symbol=NSE:${symbol}`, '_blank')}
+          className="inline-flex items-center"
+        >
+          <ExternalLink className="h-4 w-4 mr-2" />
+          Open in TradingView
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="tradingview-widget-container" ref={container} style={{ height: "100%", width: "100%" }}>
-      <div className="tradingview-widget-container__widget" style={{ height: "calc(100% - 32px)", width: "100%" }}></div>
-    </div>
+    <div className="tradingview-widget-container" ref={container} style={{ height: "100%", width: "100%" }} />
   );
 });
 
