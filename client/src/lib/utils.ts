@@ -26,13 +26,13 @@ export function formatVolume(volume: number): string {
 
 export function formatMarketCap(marketCap: number): string {
   if (marketCap >= 1000000000000) {
-    return `$${(marketCap / 1000000000000).toFixed(2)}T`;
+    return `₹${(marketCap / 1000000000000).toFixed(2)}T`;
   } else if (marketCap >= 1000000000) {
-    return `$${(marketCap / 1000000000).toFixed(1)}B`;
+    return `₹${(marketCap / 1000000000).toFixed(1)}B`;
   } else if (marketCap >= 1000000) {
-    return `$${(marketCap / 1000000).toFixed(1)}M`;
+    return `₹${(marketCap / 1000000).toFixed(1)}M`;
   }
-  return `$${marketCap.toLocaleString()}`;
+  return `₹${marketCap.toLocaleString("en-IN")}`;
 }
 
 export function formatChange(change: string | number, changePercent: string | number): string {

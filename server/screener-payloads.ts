@@ -361,7 +361,7 @@ export const screenerPayloads = {
     "columns": [
       "name",
       "description",
-      "close", 
+      "close",
       "change",
       "volume",
       "relative_volume_10d_calc",
@@ -375,19 +375,14 @@ export const screenerPayloads = {
         "right": ["India"]
       },
       {
-        "left": "close",
-        "operation": "egreater",
-        "right": 30
-      },
-      {
         "left": "exchange",
         "operation": "in_range",
         "right": ["NSE"]
       },
       {
-        "left": "price_1_month_high",
-        "operation": "eless",
-        "right": "high"
+        "left": "close",
+        "operation": "egreater",
+        "right": 30
       },
       {
         "left": "average_volume_60d_calc",
@@ -395,14 +390,14 @@ export const screenerPayloads = {
         "right": 100000
       },
       {
-        "left": "market_cap_basic",
-        "operation": "egreater",
-        "right": 5000000000
+        "left": "High.1M",
+        "operation": "eless",
+        "right": "high"
       },
       {
-        "left": "is_primary",
-        "operation": "equal",
-        "right": true
+        "left": "market_cap_basic",
+        "operation": "egreater",
+        "right": 8000000000
       }
     ],
     "ignore_unknown_fields": false,
@@ -439,6 +434,90 @@ export const screenerPayloads = {
                         "left": "typespecs",
                         "operation": "has",
                         "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "operator": "or",
+            "operands": [
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["preferred"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "dr"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "fund"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has_none_of",
+                        "right": ["etf"]
                       }
                     }
                   ]
