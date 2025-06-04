@@ -563,6 +563,11 @@ export const screenerPayloads = {
         "right": 100000
       },
       {
+        "left": "market_cap_basic",
+        "operation": "egreater",
+        "right": 8000000000
+      },
+      {
         "left": "Perf.Y",
         "operation": "greater",
         "right": 100
