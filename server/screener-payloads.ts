@@ -535,7 +535,7 @@ export const screenerPayloads = {
       "name",
       "description",
       "close",
-      "change", 
+      "change",
       "volume",
       "relative_volume_10d_calc",
       "market_cap_basic",
@@ -548,34 +548,24 @@ export const screenerPayloads = {
         "right": ["India"]
       },
       {
-        "left": "close",
-        "operation": "egreater",
-        "right": 30
-      },
-      {
         "left": "exchange",
         "operation": "in_range",
         "right": ["NSE"]
       },
       {
-        "left": "Perf.Y",
+        "left": "close",
         "operation": "egreater",
-        "right": 100
+        "right": 30
       },
       {
         "left": "average_volume_60d_calc",
         "operation": "greater",
-        "right": 50000
+        "right": 100000
       },
       {
-        "left": "market_cap_basic",
-        "operation": "egreater",
-        "right": 2000000000
-      },
-      {
-        "left": "is_primary",
-        "operation": "equal",
-        "right": true
+        "left": "Perf.Y",
+        "operation": "greater",
+        "right": 100
       }
     ],
     "ignore_unknown_fields": false,
@@ -584,7 +574,7 @@ export const screenerPayloads = {
     },
     "range": [0, 100],
     "sort": {
-      "sortBy": "Perf.Y",
+      "sortBy": "market_cap_basic",
       "sortOrder": "desc"
     },
     "symbols": {},
@@ -612,6 +602,90 @@ export const screenerPayloads = {
                         "left": "typespecs",
                         "operation": "has",
                         "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "operator": "or",
+            "operands": [
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["preferred"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "dr"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "fund"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has_none_of",
+                        "right": ["etf"]
                       }
                     }
                   ]
