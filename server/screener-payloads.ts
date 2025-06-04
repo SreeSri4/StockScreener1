@@ -182,7 +182,7 @@ export const screenerPayloads = {
   "volume-buzzers": {
     "columns": [
       "name",
-      "description", 
+      "description",
       "close",
       "change",
       "volume",
@@ -192,14 +192,14 @@ export const screenerPayloads = {
     ],
     "filter": [
       {
-        "left": "country",
-        "operation": "in_range",
-        "right": ["India"]
-      },
-      {
         "left": "close",
         "operation": "egreater",
         "right": 30
+      },
+      {
+        "left": "country",
+        "operation": "in_range",
+        "right": ["India"]
       },
       {
         "left": "exchange",
@@ -207,24 +207,24 @@ export const screenerPayloads = {
         "right": ["NSE"]
       },
       {
-        "left": "relative_volume_10d_calc",
-        "operation": "egreater",
-        "right": 1.5
+        "left": "average_volume_60d_calc",
+        "operation": "greater",
+        "right": 100000
       },
       {
-        "left": "volume",
-        "operation": "egreater",
-        "right": 500000
+        "left": "change",
+        "operation": "greater",
+        "right": 3
+      },
+      {
+        "left": "relative_volume_10d_calc",
+        "operation": "greater",
+        "right": 3
       },
       {
         "left": "market_cap_basic",
         "operation": "egreater",
-        "right": 1000000000
-      },
-      {
-        "left": "is_primary",
-        "operation": "equal",
-        "right": true
+        "right": 8000000000
       }
     ],
     "ignore_unknown_fields": false,
@@ -233,7 +233,7 @@ export const screenerPayloads = {
     },
     "range": [0, 100],
     "sort": {
-      "sortBy": "relative_volume_10d_calc",
+      "sortBy": "market_cap_basic",
       "sortOrder": "desc"
     },
     "symbols": {},
@@ -261,6 +261,90 @@ export const screenerPayloads = {
                         "left": "typespecs",
                         "operation": "has",
                         "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "operator": "or",
+            "operands": [
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["common"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "stock"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has",
+                        "right": ["preferred"]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "dr"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "operation": {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "expression": {
+                        "left": "type",
+                        "operation": "equal",
+                        "right": "fund"
+                      }
+                    },
+                    {
+                      "expression": {
+                        "left": "typespecs",
+                        "operation": "has_none_of",
+                        "right": ["etf"]
                       }
                     }
                   ]
