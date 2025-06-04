@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, TrendingUp, AlertCircle } from "lucide-react";
 import { ScreenerControls } from "@/components/screener-controls";
 import { StockTable } from "@/components/stock-table";
+import { ChartSidebar } from "@/components/chart-sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { getScreenerTitle, formatLastUpdated } from "@/lib/utils";
@@ -11,6 +12,7 @@ import type { StockResponse, ScreenerType } from "@shared/schema";
 export default function StockScreener() {
   const [selectedScreener, setSelectedScreener] = useState<string>("");
   const [lastUpdated, setLastUpdated] = useState<string>(formatLastUpdated());
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const { toast } = useToast();
 
   const {
@@ -43,6 +45,14 @@ export default function StockScreener() {
     if (selectedScreener) {
       refetch();
     }
+  };
+
+  const handleSymbolClick = (symbol: string) => {
+    setSelectedSymbol(symbol);
+  };
+
+  const handleCloseSidebar = () => {
+    setSelectedSymbol(null);
   };
 
   // Update last updated timestamp when data changes
@@ -123,11 +133,11 @@ export default function StockScreener() {
       );
     }
 
-    return <StockTable data={data?.stocks || []} />;
+    return <StockTable data={data?.stocks || []} onSymbolClick={handleSymbolClick} />;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -145,7 +155,7 @@ export default function StockScreener() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300 ${selectedSymbol ? 'mr-[50%]' : ''}`}>
         <ScreenerControls
           selectedScreener={selectedScreener}
           onScreenerChange={handleScreenerChange}
@@ -179,6 +189,9 @@ export default function StockScreener() {
           <p>Data provided for demonstration purposes. Real-time market data integration available.</p>
         </div>
       </main>
+
+      {/* Chart Sidebar */}
+      <ChartSidebar symbol={selectedSymbol} onClose={handleCloseSidebar} />
     </div>
   );
 }

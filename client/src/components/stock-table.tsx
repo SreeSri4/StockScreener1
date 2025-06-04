@@ -10,9 +10,10 @@ type SortDirection = "asc" | "desc";
 
 interface StockTableProps {
   data: StockResponse["stocks"];
+  onSymbolClick: (symbol: string) => void;
 }
 
-export function StockTable({ data }: StockTableProps) {
+export function StockTable({ data, onSymbolClick }: StockTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -139,7 +140,12 @@ export function StockTable({ data }: StockTableProps) {
             return (
               <TableRow key={`${stock.symbol}-${index}`} className="hover:bg-gray-50 transition-colors duration-150">
                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{stock.symbol}</div>
+                  <button
+                    onClick={() => onSymbolClick(stock.symbol)}
+                    className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+                  >
+                    {stock.symbol}
+                  </button>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                   <div className="text-sm text-gray-900" title={stock.description}>{stock.name}</div>
