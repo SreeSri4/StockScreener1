@@ -34,10 +34,6 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               locale: "en",
               enable_publishing: false,
               allow_symbol_change: true,
-              studies: [
-                  "STD;SMA",
-                  "STD;Relative%1Volume%1at%1Time"
-              ],
               hide_top_toolbar: false,
               hide_legend: false,
               save_image: false,
