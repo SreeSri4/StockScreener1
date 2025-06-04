@@ -19,7 +19,7 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
 
         // Create script element
         const script = document.createElement("script");
-        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+        script.src = "https://s3.tradingview.com/tv.js";
         script.type = "text/javascript";
         script.onload = () => {
           try {
@@ -30,7 +30,7 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               interval: "D",
               timezone: "Asia/Kolkata",
               theme: "light",
-              style: "1",
+              style: "9",
               locale: "en",
               enable_publishing: false,
               allow_symbol_change: true,
