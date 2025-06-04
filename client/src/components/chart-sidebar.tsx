@@ -29,11 +29,15 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               symbol: `NSE:${symbol}`,
               interval: "D",
               timezone: "Asia/Kolkata",
-              theme: "light",
-              style: "1",
+              theme: "dark",
+              style: "9",
               locale: "en",
               enable_publishing: false,
               allow_symbol_change: true,
+              "studies": [
+                  "STD;SMA",
+                  "STD;Relative%1Volume%1at%1Time"
+              ],
               hide_top_toolbar: false,
               hide_legend: false,
               save_image: false,
