@@ -21,9 +21,10 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/tv.js";
         script.type = "text/javascript";
+        script.async = true;
         script.onload = () => {
           try {
-            new (window as any).TradingView.widget({
+            const tvWidget = new (window as any).TradingView.widget({
               container_id: widgetContainer.id,
               autosize: true,
               symbol: `BSE:${symbol}`,
