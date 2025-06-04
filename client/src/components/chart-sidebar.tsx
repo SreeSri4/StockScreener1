@@ -26,10 +26,10 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
             new (window as any).TradingView.widget({
               container_id: widgetContainer.id,
               autosize: true,
-              symbol: `BSE:${symbol}`,
+              symbol: `NSE:${symbol}`,
               interval: "D",
               timezone: "Asia/Kolkata",
-              theme: "dark",
+              theme: "light",
               style: "9",
               locale: "en",
               enable_publishing: false,
