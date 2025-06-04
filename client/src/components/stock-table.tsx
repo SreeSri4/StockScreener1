@@ -151,7 +151,7 @@ export function StockTable({ data }: StockTableProps) {
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <div className={`text-sm font-medium ${changeClass}`}>
-                    {changeSign}{stock.change.toFixed(2)}
+                    {changeSign}{stock.change.toFixed(2)}%
                   </div>
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
