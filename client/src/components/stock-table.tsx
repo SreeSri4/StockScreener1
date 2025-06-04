@@ -10,10 +10,9 @@ type SortDirection = "asc" | "desc";
 
 interface StockTableProps {
   data: StockResponse["stocks"];
-  onSymbolClick: (symbol: string) => void;
 }
 
-export function StockTable({ data, onSymbolClick }: StockTableProps) {
+export function StockTable({ data }: StockTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -141,7 +140,7 @@ export function StockTable({ data, onSymbolClick }: StockTableProps) {
               <TableRow key={`${stock.symbol}-${index}`} className="hover:bg-gray-50 transition-colors duration-150">
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <button
-                    onClick={() => onSymbolClick(stock.symbol)}
+                    onClick={() => window.open(`https://in.tradingview.com/chart/?symbol=NSE:${stock.symbol}&interval=1D`, '_blank', 'noopener,noreferrer')}
                     className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors"
                   >
                     {stock.symbol}
