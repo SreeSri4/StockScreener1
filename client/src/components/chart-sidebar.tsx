@@ -47,10 +47,9 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               //    ]
             });
             tvWidget.onChartReady(() => {
-                  tvWidget.chart().createStudy("SMA", false, false, [
-                                { "len": 20 } // Length of the MA
-                            ]);
-            });
+              const chart = tvWidget.chart(); // ✅ Get the chart object
+                chart.createStudy("Moving Average", false, false, [20]);
+              });
           } catch (err) {
             console.error("Error initializing TradingView widget:", err);
             setError(true);
