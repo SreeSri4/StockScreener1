@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import './index.css';
-import { widget } from '../../charting_library';
+//import { widget } from '../../charting_library';
 
 function getLanguageFromURL() {
 	const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -46,7 +46,7 @@ export const TVChartContainer = () => {
 			studies_overrides: defaultProps.studiesOverrides,
 		};
 
-		const tvWidget = new widget(widgetOptions);
+		const tvWidget = new (window as any).TradingView.widget(widgetOptions);
 
 		tvWidget.onChartReady(() => {
 			tvWidget.headerReady().then(() => {
