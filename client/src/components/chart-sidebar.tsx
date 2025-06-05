@@ -41,7 +41,7 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               height: "100%",
               width: "100%",
               studies: [
-                "STD;SMA"
+                "STD;SMA (20, 50, 200)"
                  ]
             });
           } catch (err) {
