@@ -1,79 +1,143 @@
-import React, { useEffect, useRef } from 'react';
-import './index.css';
-//import { widget } from '../../charting_library';
+import { useState, useEffect, useRef, memo } from "react";
+import { X, ExternalLink, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-function getLanguageFromURL() {
-	const regex = new RegExp('[\\?&]lang=([^&#]*)');
-	const results = regex.exec(window.location.search);
-	return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
+  const container = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (container.current) {
+      try {
+        // Clear previous content
+        container.current.innerHTML = '';
+        
+        // Create widget container
+        const widgetContainer = document.createElement("div");
+        widgetContainer.className = "tradingview-widget-container__widget";
+        container.current.appendChild(widgetContainer);
+
+        // Create script element
+        const script = document.createElement("script");
+        script.src = "https://s3.tradingview.com/tv.js";
+        script.type = "text/javascript";
+        script.async = true;
+        script.onload = () => {
+          try {
+            const tvWidget = new (window as any).TradingView.widget({
+              container_id: widgetContainer.id,
+              autosize: true,
+              symbol: `BSE:${symbol}`,
+              interval: "D",
+              timezone: "Asia/Kolkata",
+              theme: "light",
+              style: "9",
+              locale: "en",
+              enable_publishing: false,
+              allow_symbol_change: true,
+              hide_top_toolbar: false,
+              hide_legend: false,
+              save_image: false,
+              height: "100%",
+              width: "100%",
+              // studies: [
+              //       "STD;SMA",
+              //       "STD;Relative%1Volume%1at%1Time",
+              //       "Volume@tv-basicstudies"
+              //    ]
+            });
+            tvWidget.onChartReady(() => {
+                  chart.createStudy("SMA", false, false, [
+                                { "len": 20 } // Length of the MA
+                            ]);
+            });
+          } catch (err) {
+            console.error("Error initializing TradingView widget:", err);
+            setError(true);
+          }
+        };
+        script.onerror = () => {
+          console.error("Failed to load TradingView script");
+          setError(true);
+        };
+        
+        // Add unique ID to widget container
+        widgetContainer.id = `tradingview_${Math.random().toString(36).substring(7)}`;
+        
+        // Append script
+        document.head.appendChild(script);
+        
+        return () => {
+          // Cleanup
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        };
+      } catch (err) {
+        console.error("Error setting up TradingView widget:", err);
+        setError(true);
+      }
+    }
+  }, [symbol]);
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gray-50">
+        <TrendingUp className="h-12 w-12 text-gray-400 mb-4" />
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          Unable to Load Chart
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          There was an error loading the TradingView chart. You can view it directly on TradingView.
+        </p>
+        <Button
+          onClick={() => window.open(`https://in.tradingview.com/chart/?symbol=NSE:${symbol}`, '_blank')}
+          className="inline-flex items-center"
+        >
+          <ExternalLink className="h-4 w-4 mr-2" />
+          Open in TradingView
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="tradingview-widget-container" ref={container} style={{ height: "100%", width: "100%" }} />
+  );
+});
+
+TradingViewWidget.displayName = "TradingViewWidget";
+
+interface ChartSidebarProps {
+  symbol: string | null;
+  onClose: () => void;
 }
 
-export const TVChartContainer = () => {
-	const chartContainerRef = useRef();
+export function ChartSidebar({ symbol, onClose }: ChartSidebarProps) {
+  if (!symbol) return null;
 
-	const defaultProps = {
-		symbol: 'AAPL',
-		interval: 'D',
-		datafeedUrl: 'https://demo_feed.tradingview.com',
-		libraryPath: '/charting_library/',
-		chartsStorageUrl: 'https://saveload.tradingview.com',
-		chartsStorageApiVersion: '1.1',
-		clientId: 'tradingview.com',
-		userId: 'public_user_id',
-		fullscreen: false,
-		autosize: true,
-		studiesOverrides: {},
-	};
+  return (
+    <div className="fixed right-0 top-0 h-full w-[calc(100%-2rem)] md:w-[750px] bg-white shadow-2xl border-l border-gray-200 z-50 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center space-x-2">
+          <h3 className="font-semibold text-gray-900">Chart: {symbol}</h3>
+          <span className="text-sm text-gray-500">NSE</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="h-8 w-8 p-0"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
 
-	useEffect(() => {
-		const widgetOptions = {
-			symbol: defaultProps.symbol,
-			// BEWARE: no trailing slash is expected in feed URL
-			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(defaultProps.datafeedUrl),
-			interval: defaultProps.interval,
-			container: chartContainerRef.current,
-			library_path: defaultProps.libraryPath,
-
-			locale: getLanguageFromURL() || 'en',
-			disabled_features: ['use_localstorage_for_settings'],
-			enabled_features: ['study_templates'],
-			charts_storage_url: defaultProps.chartsStorageUrl,
-			charts_storage_api_version: defaultProps.chartsStorageApiVersion,
-			client_id: defaultProps.clientId,
-			user_id: defaultProps.userId,
-			fullscreen: defaultProps.fullscreen,
-			autosize: defaultProps.autosize,
-			studies_overrides: defaultProps.studiesOverrides,
-		};
-
-		const tvWidget = new (window as any).TradingView.widget(widgetOptions);
-
-		tvWidget.onChartReady(() => {
-			tvWidget.headerReady().then(() => {
-				const button = tvWidget.createButton();
-				button.setAttribute('title', 'Click to show a notification popup');
-				button.classList.add('apply-common-tooltip');
-				button.addEventListener('click', () => tvWidget.showNoticeDialog({
-					title: 'Notification',
-					body: 'TradingView Charting Library API works correctly',
-					callback: () => {
-						console.log('Noticed!');
-					},
-				}));
-
-				button.innerHTML = 'Check API';
-			});
-		});
-
-		return () => {
-			tvWidget.remove();
-		};
-	});
-
-	return (
-		<div
-			ref={chartContainerRef}
-			className={'TVChartContainer'}
-		/>
-	);
+      {/* Chart content */}
+      <div className="flex-1 w-full h-[calc(100%-64px)]">
+        <TradingViewWidget symbol={symbol} />
+      </div>
+    </div>
+  );
 }
