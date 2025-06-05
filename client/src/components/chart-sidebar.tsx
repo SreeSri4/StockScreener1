@@ -40,16 +40,12 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               save_image: false,
               height: "100%",
               width: "100%",
-              // studies: [
-              //       "STD;SMA",
-              //       "STD;Relative%1Volume%1at%1Time",
-              //       "Volume@tv-basicstudies"
-              //    ]
+              studies: [
+                    "STD;SMA",
+                    "STD;Relative%1Volume%1at%1Time",
+                    "Volume@tv-basicstudies"
+                 ]
             });
-            tvWidget.onChartReady(() => {
-              const chart = tvWidget.chart(); // ✅ Get the chart object
-                chart.createStudy("Moving Average", false, false, [20]);
-              });
           } catch (err) {
             console.error("Error initializing TradingView widget:", err);
             setError(true);
