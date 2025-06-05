@@ -41,15 +41,9 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               height: "100%",
               width: "100%",
               studies: [
-                    "MASimple@tv-basicstudies",
-                    "STD;Relative%1Volume%1at%1Time",
-                    "Volume@tv-basicstudies"
-                 ],
-            studies_overrides: {
-              "MASimple@tv-basicstudies.length": 20,  // Set SMA length to 20
-              "STD;Relative%1Volume%1at%1Time.length": 20,
-              "volume.volume.maLength": 20 
-            }
+                    "STD;Bollinger_Bands",
+                    "STD;Relative%1Volume%1at%1Time"
+                 ]
             });
           } catch (err) {
             console.error("Error initializing TradingView widget:", err);
