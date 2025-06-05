@@ -40,20 +40,9 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               save_image: false,
               height: "100%",
               width: "100%",
-              // --- Add onChartReady to add indicators ---
-              onChartReady: function() {
-                  const chart = tvWidget.chart(); // Get the chart instance
-
-                  // Add a Moving Average (MA) indicator
-                  chart.createStudy("Moving Average", false, false, [
-                      { "len": 20 } // Length of the MA
-                  ]);
-
-                  // Add a Relative Volume indicator
-                  chart.createStudy("Relative Volume at Time", false, false, [
-                      { "length": 20 } 
-                  ]);
-              }
+              studies: [
+                "STD;SMA"
+                 ]
             });
           } catch (err) {
             console.error("Error initializing TradingView widget:", err);
