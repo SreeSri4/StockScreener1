@@ -47,7 +47,7 @@ const TradingViewWidget = memo(({ symbol }: { symbol: string }) => {
               //    ]
             });
             tvWidget.onChartReady(() => {
-                  chart.createStudy("SMA", false, false, [
+                  tvWidget.chart().createStudy("SMA", false, false, [
                                 { "len": 20 } // Length of the MA
                             ]);
             });
